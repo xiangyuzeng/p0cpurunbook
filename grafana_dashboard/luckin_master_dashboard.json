@@ -1,0 +1,999 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Comprehensive operations analytics dashboard for Luckin Coffee USA - Orders, Revenue, Store Performance, Payments, and Member Analytics",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0},
+      "id": 100,
+      "panels": [],
+      "title": "Executive Summary",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 4, "w": 4, "x": 0, "y": 1},
+      "id": 1,
+      "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT SUM(metric_count) AS \"Orders Today\" FROM luckyus_iluckyhealth.t_collect_order_inter WHERE metric_name = 'order_all_create' AND metric_value = 0 AND DATE(insert_time) = CURDATE();",
+          "refId": "A"
+        }
+      ],
+      "title": "Orders Today",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_SALESORDER}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 4, "w": 4, "x": 4, "y": 1},
+      "id": 2,
+      "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_SALESORDER}"},
+          "format": "table",
+          "rawSql": "SELECT ROUND(SUM(pay_money), 2) AS \"Revenue Today\" FROM luckyus_sales_order.t_order WHERE tenant = 'LKUS' AND status = 90 AND DATE(create_time) = CURDATE();",
+          "refId": "A"
+        }
+      ],
+      "title": "Revenue Today",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_SALESORDER}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 4, "w": 4, "x": 8, "y": 1},
+      "id": 3,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_SALESORDER}"},
+          "format": "table",
+          "rawSql": "SELECT ROUND(AVG(pay_money), 2) AS \"AOV\" FROM luckyus_sales_order.t_order WHERE tenant = 'LKUS' AND status = 90 AND DATE(create_time) = CURDATE() AND pay_money > 0;",
+          "refId": "A"
+        }
+      ],
+      "title": "Avg Order Value",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 4, "w": 4, "x": 12, "y": 1},
+      "id": 4,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT metric_count AS \"Active Stores\" FROM luckyus_iluckyhealth.t_collect_shop_inter WHERE metric_name = 'shop_all_now_opening' ORDER BY insert_time DESC LIMIT 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Active Stores",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "yellow", "value": 90}, {"color": "green", "value": 95}]},
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 4, "w": 4, "x": 16, "y": 1},
+      "id": 5,
+      "options": {"orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showThresholdLabels": false, "showThresholdMarkers": true},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT CAST(metric_count_comment AS DECIMAL(5,2)) AS \"Success Rate\" FROM luckyus_iluckyhealth.t_collect_payment_inter WHERE metric_name = 'all_tenant_payment_success' ORDER BY insert_time DESC LIMIT 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Payment Success Rate",
+      "type": "gauge"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 4, "w": 4, "x": 20, "y": 1},
+      "id": 6,
+      "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT SUM(metric_count) AS \"New Members\" FROM luckyus_iluckyhealth.t_collect_crm_inter WHERE metric_name = 'crm_member_append' AND DATE(insert_time) = CURDATE();",
+          "refId": "A"
+        }
+      ],
+      "title": "New Members Today",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 5},
+      "id": 101,
+      "panels": [],
+      "title": "Real-Time Order Monitoring",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {"axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": {"legend": false, "tooltip": false, "viz": false}, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": {"type": "linear"}, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6},
+      "id": 7,
+      "options": {"legend": {"calcs": ["sum", "mean"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "time_series",
+          "rawSql": "SELECT insert_time AS time, SUM(metric_count) AS \"Orders\" FROM luckyus_iluckyhealth.t_collect_order_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_all_create' AND metric_value = 0 GROUP BY insert_time ORDER BY insert_time;",
+          "refId": "A"
+        }
+      ],
+      "title": "Live Order Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {"axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 30, "gradientMode": "none", "hideFrom": {"legend": false, "tooltip": false, "viz": false}, "lineInterpolation": "smooth", "lineWidth": 1, "pointSize": 5, "scaleDistribution": {"type": "linear"}, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "normal"}, "thresholdsStyle": {"mode": "off"}},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "Mobile App"}, "properties": [{"id": "color", "value": {"fixedColor": "#3366CC", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "In-Store/POS"}, "properties": [{"id": "color", "value": {"fixedColor": "#109618", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "Mini Program/Web"}, "properties": [{"id": "color", "value": {"fixedColor": "#990099", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "DoorDash"}, "properties": [{"id": "color", "value": {"fixedColor": "#FF2D08", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "Grubhub"}, "properties": [{"id": "color", "value": {"fixedColor": "#F26322", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "Uber Eats"}, "properties": [{"id": "color", "value": {"fixedColor": "#000000", "mode": "fixed"}}]}
+        ]
+      },
+      "gridPos": {"h": 8, "w": 8, "x": 12, "y": 6},
+      "id": 8,
+      "options": {"legend": {"calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "time_series",
+          "rawSql": "SELECT insert_time AS time, CASE metric_value WHEN 1 THEN 'In-Store/POS' WHEN 2 THEN 'Mobile App' WHEN 3 THEN 'Mini Program/Web' WHEN 8 THEN 'DoorDash' WHEN 9 THEN 'Grubhub' WHEN 10 THEN 'Uber Eats' END AS metric, SUM(metric_count) AS value FROM luckyus_iluckyhealth.t_collect_order_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_channel_create' GROUP BY insert_time, metric_value ORDER BY insert_time;",
+          "refId": "A"
+        }
+      ],
+      "title": "Orders by Channel (Stacked)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "Mobile App"}, "properties": [{"id": "color", "value": {"fixedColor": "#3366CC", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "In-Store/POS"}, "properties": [{"id": "color", "value": {"fixedColor": "#109618", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "Mini Program/Web"}, "properties": [{"id": "color", "value": {"fixedColor": "#990099", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "DoorDash"}, "properties": [{"id": "color", "value": {"fixedColor": "#FF2D08", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "Grubhub"}, "properties": [{"id": "color", "value": {"fixedColor": "#F26322", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "Uber Eats"}, "properties": [{"id": "color", "value": {"fixedColor": "#000000", "mode": "fixed"}}]}
+        ]
+      },
+      "gridPos": {"h": 8, "w": 4, "x": 20, "y": 6},
+      "id": 9,
+      "options": {"displayLabels": ["percent"], "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}, "pieType": "pie", "reduceOptions": {"calcs": ["sum"], "fields": "", "values": false}, "tooltip": {"mode": "single", "sort": "none"}},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT CASE metric_value WHEN 1 THEN 'In-Store/POS' WHEN 2 THEN 'Mobile App' WHEN 3 THEN 'Mini Program/Web' WHEN 8 THEN 'DoorDash' WHEN 9 THEN 'Grubhub' WHEN 10 THEN 'Uber Eats' END AS \"Channel\", SUM(metric_count) AS \"Orders\" FROM luckyus_iluckyhealth.t_collect_order_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_channel_create' GROUP BY metric_value ORDER BY SUM(metric_count) DESC;",
+          "refId": "A"
+        }
+      ],
+      "title": "Channel Distribution",
+      "type": "piechart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 14},
+      "id": 102,
+      "panels": [],
+      "title": "Order Lifecycle Funnel",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "4. Cancelled"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}]}
+        ]
+      },
+      "gridPos": {"h": 6, "w": 8, "x": 0, "y": 15},
+      "id": 10,
+      "options": {"displayMode": "gradient", "minVizHeight": 10, "minVizWidth": 0, "orientation": "horizontal", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showUnfilled": true, "valueMode": "color"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT CASE metric_name WHEN 'order_all_create' THEN '1. Created' WHEN 'order_all_pay' THEN '2. Paid' WHEN 'order_all_done' THEN '3. Completed' WHEN 'order_all_cancel' THEN '4. Cancelled' END AS \"Stage\", SUM(metric_count) AS \"Orders\" FROM luckyus_iluckyhealth.t_collect_order_inter WHERE $__timeFilter(insert_time) AND metric_name IN ('order_all_create', 'order_all_pay', 'order_all_done', 'order_all_cancel') AND metric_value = 0 GROUP BY metric_name ORDER BY 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Order Funnel",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "yellow", "value": 80}, {"color": "green", "value": 90}]},
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 6, "w": 4, "x": 8, "y": 15},
+      "id": 11,
+      "options": {"orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showThresholdLabels": false, "showThresholdMarkers": true},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT ROUND((SELECT SUM(metric_count) FROM luckyus_iluckyhealth.t_collect_order_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_all_pay' AND metric_value = 0) / NULLIF((SELECT SUM(metric_count) FROM luckyus_iluckyhealth.t_collect_order_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_all_create' AND metric_value = 0), 0) * 100, 2) AS \"Conversion Rate\";",
+          "refId": "A"
+        }
+      ],
+      "title": "Conversion Rate (Paid/Created)",
+      "type": "gauge"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "yellow", "value": 85}, {"color": "green", "value": 95}]},
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 6, "w": 4, "x": 12, "y": 15},
+      "id": 12,
+      "options": {"orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showThresholdLabels": false, "showThresholdMarkers": true},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT ROUND((SELECT SUM(metric_count) FROM luckyus_iluckyhealth.t_collect_order_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_all_done' AND metric_value = 0) / NULLIF((SELECT SUM(metric_count) FROM luckyus_iluckyhealth.t_collect_order_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_all_pay' AND metric_value = 0), 0) * 100, 2) AS \"Completion Rate\";",
+          "refId": "A"
+        }
+      ],
+      "title": "Completion Rate (Done/Paid)",
+      "type": "gauge"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "max": 20,
+          "min": 0,
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 5}, {"color": "red", "value": 10}]},
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 6, "w": 4, "x": 16, "y": 15},
+      "id": 13,
+      "options": {"orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showThresholdLabels": false, "showThresholdMarkers": true},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT ROUND((SELECT SUM(metric_count) FROM luckyus_iluckyhealth.t_collect_order_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_all_cancel' AND metric_value = 0) / NULLIF((SELECT SUM(metric_count) FROM luckyus_iluckyhealth.t_collect_order_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_all_create' AND metric_value = 0), 0) * 100, 2) AS \"Cancellation Rate\";",
+          "refId": "A"
+        }
+      ],
+      "title": "Cancellation Rate",
+      "type": "gauge"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 21},
+      "id": 103,
+      "panels": [],
+      "title": "Store Performance",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_SALESORDER}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 22},
+      "id": 14,
+      "options": {"displayMode": "gradient", "minVizHeight": 10, "minVizWidth": 0, "orientation": "horizontal", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showUnfilled": true, "valueMode": "color"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_SALESORDER}"},
+          "format": "table",
+          "rawSql": "SELECT shop_name AS \"Store\", COUNT(*) AS \"Orders\" FROM luckyus_sales_order.t_order WHERE tenant = 'LKUS' AND status = 90 AND $__timeFilter(create_time) GROUP BY shop_name ORDER BY COUNT(*) DESC LIMIT 10;",
+          "refId": "A"
+        }
+      ],
+      "title": "Top 10 Stores by Orders",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_SALESORDER}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "custom": {"align": "auto", "cellOptions": {"type": "auto"}, "inspect": false},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}
+        },
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "Revenue"}, "properties": [{"id": "unit", "value": "currencyUSD"}]},
+          {"matcher": {"id": "byName", "options": "AOV"}, "properties": [{"id": "unit", "value": "currencyUSD"}]}
+        ]
+      },
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 22},
+      "id": 15,
+      "options": {"cellHeight": "sm", "footer": {"countRows": false, "fields": "", "reducer": ["sum"], "show": false}, "showHeader": true, "sortBy": [{"desc": true, "displayName": "Orders"}]},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_SALESORDER}"},
+          "format": "table",
+          "rawSql": "SELECT shop_name AS \"Store\", COUNT(*) AS \"Orders\", ROUND(SUM(pay_money), 2) AS \"Revenue\", ROUND(AVG(pay_money), 2) AS \"AOV\" FROM luckyus_sales_order.t_order WHERE tenant = 'LKUS' AND status = 90 AND $__timeFilter(create_time) GROUP BY shop_name ORDER BY COUNT(*) DESC;",
+          "refId": "A"
+        }
+      ],
+      "title": "Store Performance Table",
+      "type": "table"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_SALESORDER}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {"axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 0, "gradientMode": "none", "hideFrom": {"legend": false, "tooltip": false, "viz": false}, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": {"type": "linear"}, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 22},
+      "id": 16,
+      "options": {"legend": {"calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_SALESORDER}"},
+          "format": "time_series",
+          "rawSql": "SELECT DATE(create_time) AS time, shop_name AS metric, COUNT(*) AS value FROM luckyus_sales_order.t_order WHERE tenant = 'LKUS' AND status = 90 AND $__timeFilter(create_time) GROUP BY DATE(create_time), shop_name ORDER BY DATE(create_time);",
+          "refId": "A"
+        }
+      ],
+      "title": "Store Orders Over Time",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 30},
+      "id": 104,
+      "panels": [],
+      "title": "3rd Party Delivery Analysis",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "DoorDash"}, "properties": [{"id": "color", "value": {"fixedColor": "#FF2D08", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "Grubhub"}, "properties": [{"id": "color", "value": {"fixedColor": "#F26322", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "Uber Eats"}, "properties": [{"id": "color", "value": {"fixedColor": "#000000", "mode": "fixed"}}]}
+        ]
+      },
+      "gridPos": {"h": 7, "w": 6, "x": 0, "y": 31},
+      "id": 17,
+      "options": {"displayLabels": ["name", "percent"], "legend": {"displayMode": "list", "placement": "bottom", "showLegend": true}, "pieType": "donut", "reduceOptions": {"calcs": ["sum"], "fields": "", "values": false}, "tooltip": {"mode": "single", "sort": "none"}},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT CASE metric_value WHEN 8 THEN 'DoorDash' WHEN 9 THEN 'Grubhub' WHEN 10 THEN 'Uber Eats' END AS \"Platform\", SUM(metric_count) AS \"Orders\" FROM luckyus_iluckyhealth.t_collect_order_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_channel_create' AND metric_value IN (8, 9, 10) GROUP BY metric_value ORDER BY SUM(metric_count) DESC;",
+          "refId": "A"
+        }
+      ],
+      "title": "3P Platform Distribution",
+      "type": "piechart"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {"axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": {"legend": false, "tooltip": false, "viz": false}, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": {"type": "linear"}, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": [
+          {"matcher": {"id": "byName", "options": "DoorDash"}, "properties": [{"id": "color", "value": {"fixedColor": "#FF2D08", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "Grubhub"}, "properties": [{"id": "color", "value": {"fixedColor": "#F26322", "mode": "fixed"}}]},
+          {"matcher": {"id": "byName", "options": "Uber Eats"}, "properties": [{"id": "color", "value": {"fixedColor": "#000000", "mode": "fixed"}}]}
+        ]
+      },
+      "gridPos": {"h": 7, "w": 10, "x": 6, "y": 31},
+      "id": 18,
+      "options": {"legend": {"calcs": ["sum", "mean"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "time_series",
+          "rawSql": "SELECT insert_time AS time, CASE metric_value WHEN 8 THEN 'DoorDash' WHEN 9 THEN 'Grubhub' WHEN 10 THEN 'Uber Eats' END AS metric, SUM(metric_count) AS value FROM luckyus_iluckyhealth.t_collect_order_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_channel_create' AND metric_value IN (8, 9, 10) GROUP BY insert_time, metric_value ORDER BY insert_time;",
+          "refId": "A"
+        }
+      ],
+      "title": "3P Platform Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_SALESORDER}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 7, "w": 8, "x": 16, "y": 31},
+      "id": 19,
+      "options": {"displayMode": "gradient", "minVizHeight": 10, "minVizWidth": 0, "orientation": "horizontal", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showUnfilled": true, "valueMode": "color"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_SALESORDER}"},
+          "format": "table",
+          "rawSql": "SELECT shop_name AS \"Store\", COUNT(*) AS \"3P Orders\" FROM luckyus_sales_order.t_order WHERE tenant = 'LKUS' AND status = 90 AND channel IN (8, 9, 10) AND $__timeFilter(create_time) GROUP BY shop_name ORDER BY COUNT(*) DESC;",
+          "refId": "A"
+        }
+      ],
+      "title": "3P Orders by Store",
+      "type": "bargauge"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 38},
+      "id": 105,
+      "panels": [],
+      "title": "Shop Status Monitoring",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 5, "w": 4, "x": 0, "y": 39},
+      "id": 20,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT metric_count AS \"Shops Open\" FROM luckyus_iluckyhealth.t_collect_shop_inter WHERE metric_name = 'shop_all_now_opening' ORDER BY insert_time DESC LIMIT 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Shops Currently Open",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 5, "w": 4, "x": 4, "y": 39},
+      "id": 21,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT metric_count AS \"Planned Open\" FROM luckyus_iluckyhealth.t_collect_shop_inter WHERE metric_name = 'shop_all_plan_opening' ORDER BY insert_time DESC LIMIT 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Shops Planned to Open",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "yellow", "value": 90}, {"color": "green", "value": 98}]},
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 5, "w": 4, "x": 8, "y": 39},
+      "id": 22,
+      "options": {"orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showThresholdLabels": false, "showThresholdMarkers": true},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT ROUND((SELECT metric_count FROM luckyus_iluckyhealth.t_collect_shop_inter WHERE metric_name = 'shop_all_now_opening' ORDER BY insert_time DESC LIMIT 1) / NULLIF((SELECT metric_count FROM luckyus_iluckyhealth.t_collect_shop_inter WHERE metric_name = 'shop_all_plan_opening' ORDER BY insert_time DESC LIMIT 1), 0) * 100, 2) AS \"Availability\";",
+          "refId": "A"
+        }
+      ],
+      "title": "Availability Rate",
+      "type": "gauge"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 5, "w": 4, "x": 12, "y": 39},
+      "id": 23,
+      "options": {"colorMode": "background", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT metric_count AS \"Force Closed\" FROM luckyus_iluckyhealth.t_collect_shop_inter WHERE metric_name = 'shop_all_forced_off' ORDER BY insert_time DESC LIMIT 1;",
+          "refId": "A"
+        }
+      ],
+      "title": "Force Closed Stores (ALERT)",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {"axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": {"legend": false, "tooltip": false, "viz": false}, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": {"type": "linear"}, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 5, "w": 8, "x": 16, "y": 39},
+      "id": 24,
+      "options": {"legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "time_series",
+          "rawSql": "SELECT insert_time AS time, CASE metric_name WHEN 'shop_all_now_opening' THEN 'Open' WHEN 'shop_all_plan_opening' THEN 'Planned' WHEN 'shop_all_forced_off' THEN 'Force Closed' END AS metric, metric_count AS value FROM luckyus_iluckyhealth.t_collect_shop_inter WHERE $__timeFilter(insert_time) AND metric_name IN ('shop_all_now_opening', 'shop_all_plan_opening', 'shop_all_forced_off') ORDER BY insert_time;",
+          "refId": "A"
+        }
+      ],
+      "title": "Shop Status Timeline",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 44},
+      "id": 106,
+      "panels": [],
+      "title": "Payment Analytics",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {"axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": {"legend": false, "tooltip": false, "viz": false}, "lineInterpolation": "smooth", "lineWidth": 2, "pointSize": 5, "scaleDistribution": {"type": "linear"}, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "line+area"}},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "transparent", "value": null}, {"color": "red", "value": 95}]},
+          "unit": "percent",
+          "max": 100,
+          "min": 0
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 7, "w": 12, "x": 0, "y": 45},
+      "id": 25,
+      "options": {"legend": {"calcs": ["mean", "min"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "single", "sort": "none"}},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "time_series",
+          "rawSql": "SELECT insert_time AS time, CAST(metric_count_comment AS DECIMAL(5,2)) AS \"Success Rate %\" FROM luckyus_iluckyhealth.t_collect_payment_inter WHERE $__timeFilter(insert_time) AND metric_name = 'all_tenant_payment_success' ORDER BY insert_time;",
+          "refId": "A"
+        }
+      ],
+      "title": "Payment Success Rate Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 7, "w": 6, "x": 12, "y": 45},
+      "id": 26,
+      "options": {"displayLabels": ["name", "percent"], "legend": {"displayMode": "list", "placement": "right", "showLegend": true}, "pieType": "donut", "reduceOptions": {"calcs": ["sum"], "fields": "", "values": false}, "tooltip": {"mode": "single", "sort": "none"}},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT metric_name_comment AS \"Provider\", SUM(metric_count) AS \"Transactions\" FROM luckyus_iluckyhealth.t_collect_payment_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_pay_channel_success' GROUP BY metric_name_comment ORDER BY SUM(metric_count) DESC;",
+          "refId": "A"
+        }
+      ],
+      "title": "Payment by Provider",
+      "type": "piechart"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 5}, {"color": "red", "value": 10}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 7, "w": 3, "x": 18, "y": 45},
+      "id": 27,
+      "options": {"colorMode": "background", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["sum"], "fields": "", "values": false}, "textMode": "auto"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT SUM(metric_count) AS \"Failed\" FROM luckyus_iluckyhealth.t_collect_payment_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_payment_fail';",
+          "refId": "A"
+        }
+      ],
+      "title": "Failed Payments",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 10}, {"color": "red", "value": 20}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 7, "w": 3, "x": 21, "y": 45},
+      "id": 28,
+      "options": {"colorMode": "background", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["sum"], "fields": "", "values": false}, "textMode": "auto"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT SUM(metric_count) AS \"Pending >30m\" FROM luckyus_iluckyhealth.t_collect_payment_inter WHERE $__timeFilter(insert_time) AND metric_name = 'order_payment_pending_30m';",
+          "refId": "A"
+        }
+      ],
+      "title": "Pending >30min (ALERT)",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 52},
+      "id": 107,
+      "panels": [],
+      "title": "Member Analytics",
+      "type": "row"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {"axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "bars", "fillOpacity": 80, "gradientMode": "none", "hideFrom": {"legend": false, "tooltip": false, "viz": false}, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": {"type": "linear"}, "showPoints": "never", "spanNulls": false, "stacking": {"group": "A", "mode": "none"}, "thresholdsStyle": {"mode": "off"}},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 6, "w": 16, "x": 0, "y": 53},
+      "id": 29,
+      "options": {"legend": {"calcs": ["sum", "mean"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "single", "sort": "none"}},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "time_series",
+          "rawSql": "SELECT DATE(insert_time) AS time, SUM(metric_count) AS \"New Members\" FROM luckyus_iluckyhealth.t_collect_crm_inter WHERE $__timeFilter(insert_time) AND metric_name = 'crm_member_append' GROUP BY DATE(insert_time) ORDER BY DATE(insert_time);",
+          "refId": "A"
+        }
+      ],
+      "title": "Daily New Member Registrations",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 3, "w": 4, "x": 16, "y": 53},
+      "id": 30,
+      "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["sum"], "fields": "", "values": false}, "textMode": "auto"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT SUM(metric_count) AS \"New Members Today\" FROM luckyus_iluckyhealth.t_collect_crm_inter WHERE metric_name = 'crm_member_append' AND DATE(insert_time) = CURDATE();",
+          "refId": "A"
+        }
+      ],
+      "title": "New Members Today",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {"mode": "absolute", "steps": [{"color": "purple", "value": null}]},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 3, "w": 4, "x": 20, "y": 53},
+      "id": 31,
+      "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["sum"], "fields": "", "values": false}, "textMode": "auto"},
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {"type": "mysql", "uid": "${DS_ILUCKYHEALTH}"},
+          "format": "table",
+          "rawSql": "SELECT SUM(metric_count) AS \"This Week\" FROM luckyus_iluckyhealth.t_collect_crm_inter WHERE metric_name = 'crm_member_append' AND insert_time >= NOW() - INTERVAL 7 DAY;",
+          "refId": "A"
+        }
+      ],
+      "title": "New Members This Week",
+      "type": "stat"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["luckin", "operations", "usa", "coffee"],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "label": "Health DB",
+        "multi": false,
+        "name": "DS_ILUCKYHEALTH",
+        "options": [],
+        "query": "mysql",
+        "refresh": 1,
+        "regex": ".*iluckyhealth.*",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "label": "Sales Order DB",
+        "multi": false,
+        "name": "DS_SALESORDER",
+        "options": [],
+        "query": "mysql",
+        "refresh": 1,
+        "regex": ".*salesorder.*",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "label": "Op Shop DB",
+        "multi": false,
+        "name": "DS_OPSHOP",
+        "options": [],
+        "query": "mysql",
+        "refresh": 1,
+        "regex": ".*opshop.*",
+        "skipUrlSync": false,
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": {"from": "now-24h", "to": "now"},
+  "timepicker": {
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"]
+  },
+  "timezone": "America/New_York",
+  "title": "Luckin Coffee USA - Master Operations Dashboard",
+  "uid": "luckin-usa-master",
+  "version": 1,
+  "weekStart": ""
+}
